@@ -27,17 +27,18 @@ const config = (() => {
       config_json = {};
     }
   }
-  let part_warp;
-  if (config_json['warp']) {
-    part_warp = {
-      warp_secretKey: config_json['warp']['key'] || '',
-      warp_ipv6: config_json['warp']['ipv6'] || '',
-      warp_endpoint:
-        config_json['warp']['endpoint'] || 'engage.cloudflareclient.com',
-      add_ipv4: config_json['warp']['add4'] || false,
-      add_ipv6: config_json['warp']['add6'] || false,
-    };
-  }
+  // not use in this edition
+  // let part_warp;
+  // if (config_json['warp']) {
+  //   part_warp = {
+  //     warp_secretKey: config_json['warp']['key'] || '',
+  //     warp_ipv6: config_json['warp']['ipv6'] || '',
+  //     warp_endpoint:
+  //       config_json['warp']['endpoint'] || 'engage.cloudflareclient.com',
+  //     add_ipv4: config_json['warp']['add4'] || false,
+  //     add_ipv6: config_json['warp']['add6'] || false,
+  //   };
+  // }
   let part_argo;
   if (config_json['argo']) {
     part_argo = {
@@ -67,7 +68,6 @@ const config = (() => {
     //   config_json['core_path'] ||
     //   (os.platform() == 'win32' ? './core.exe' : './core'),
     port: config_json['port'] || 3000,
-    // not use in this edition
     // middle_port: config_json['middle_port'] || 58515,
     // protocol: config_json['protocol'] || 'dmxlc3M=',
     uuid: config_json['uuid'] || guid(),
@@ -75,7 +75,7 @@ const config = (() => {
     // tls
     ...part_tls,
     // warp
-    ...part_warp,
+    // ...part_warp,
     // argo (cloudflared)
     ...part_argo,
   };
