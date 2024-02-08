@@ -94,6 +94,9 @@ function guid() {
   });
 }
 
+let pid_core = NaN,
+  pid_argo = NaN;
+
 app.get('/generate_204', (req, res) => {
   res.status(204).send('');
 });
@@ -131,7 +134,7 @@ app.get(config.path + config.web_process_path + '/update', async (req, res) => {
     }
   }
   if (typeof req.query['core'] == 'string') {
-    res.write('\n' + 'core载成功' + '\n    ' + '(?)');
+    res.write('\n' + 'core下载成功' + '\n    ' + '(?)');
   }
 
   start(true);
@@ -242,7 +245,7 @@ async function start_core() {
 path: ${config.path}
 uuid: ${config.uuid}
 ----------`);
-    resolve(wss);
+    resolve([true, wss]);
   });
 }
 
@@ -402,7 +405,7 @@ function listen_port(wss) {
   // console.log(await start_argo());
 })();
 start();
-async function start() {
+async function start(no_listen_port = false) {
   if (config.use_argo) {
     if (!fs.existsSync(path.resolve(process.cwd(), config.argo_path))) {
       const foo = await download_argo();
@@ -414,9 +417,20 @@ async function start() {
     } else {
       console.log('[初始化]', 'argo已存在');
     }
-    console.log(await start_argo());
+    const start_return = await start_argo();
+    if (start_return[0]) {
+      pid_argo = start_return[1];
+      console.log('[初始化]', 'argo启动成功');
+    } else {
+      console.log('[初始化]', 'argo启动失败：', start_return[1]);
+    }
   }
-  const foo = await start_core();
-  console.log('[初始化] 启动成功(?)');
-  listen_port(foo);
+  const start_return = await start_core();
+  if (start_return[0]) {
+    console.log('[初始化]', 'core启动成功');
+  } else {
+    console.log('[初始化]', 'core启动失败：', start_return[1]);
+  }
+
+  if (!no_listen_port) listen_port(start_return[1]);
 }
